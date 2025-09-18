@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import "Theme"
 
 ApplicationWindow {
     id: root
@@ -7,6 +8,7 @@ ApplicationWindow {
     width: 1000
     height: 700
     title: "PM"
+    color: Theme.backgroundColor
 
     // Main StackView for navigation
     StackView {
