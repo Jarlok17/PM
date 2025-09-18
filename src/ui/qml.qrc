@@ -2,9 +2,13 @@
     <qresource prefix="/">
         <file>Main.qml</file>
     </qresource>
-    <qresource prefix="Pages/">
-        <file>LoginPage.qml</file>
-        <file>RegistrationPage.qml</file>
-        <file>MainPage.qml</file>
+    <qresource prefix="">
+        <file alias="Theme/Theme.qml">Theme/Theme.qml</file>
+        <file alias="Theme/qmldir">Theme/qmldir</file>
+    </qresource>
+    <qresource prefix="">
+        <file alias="Pages/LoginPage.qml">Pages/LoginPage.qml</file>
+        <file alias="Pages/RegistrationPage.qml">Pages/RegistrationPage.qml</file>
+        <file alias="Pages/MainPage.qml">Pages/MainPage.qml</file>
     </qresource>
 </RCC>
