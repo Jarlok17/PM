@@ -3,6 +3,7 @@
 #include <QQmlContext>
 
 #include "clipboard/textclipboard.hpp"
+#include "dbmanager/dbmanager.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,9 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<TextClipboard>("PM", 1, 0, "TextClipboard");
+
+    DBManager dbManager;
+    engine.rootContext()->setContextProperty("dbManager", &dbManager);
 
     const QUrl url(QStringLiteral("qrc:/Main.qml"));
     QObject::connect(
