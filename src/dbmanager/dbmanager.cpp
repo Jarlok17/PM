@@ -65,23 +65,40 @@ bool DBManager::initializeDatabase()
     return true;
 }
 
-bool DBManager::executeQuery(const QString &query)
+bool DBManager::executePreparedQuery(const QString &query, const QVariantList &params)
 {
     QSqlQuery sqlQuery;
-    return sqlQuery.exec(query);
+    sqlQuery.prepare(query);
+
+    for (const QVariant &param : params) {
+        sqlQuery.addBindValue(param);
+    }
+
+    if (!sqlQuery.exec()) {
+        qDebug() << "Error query: :" << sqlQuery.lastError().text();
+        return false;
+    }
+    return true;
 }
 
-QVariantList DBManager::getQueryResults(const QString &query)
+QVariantList DBManager::getPreparedQueryResults(const QString &query, const QVariantList &params)
 {
     QVariantList results;
-    QSqlQuery sqlQuery(query);
+    QSqlQuery sqlQuery;
+    sqlQuery.prepare(query);
 
-    while (sqlQuery.next()) {
-        QVariantMap row;
-        for (int i = 0; i < sqlQuery.record().count(); ++i) {
-            row[sqlQuery.record().fieldName(i)] = sqlQuery.value(i);
+    for (const QVariant &param : params) {
+        sqlQuery.addBindValue(param);
+    }
+
+    if (sqlQuery.exec()) {
+        while (sqlQuery.next()) {
+            QVariantMap row;
+            for (int i = 0; i < sqlQuery.record().count(); ++i) {
+                row[sqlQuery.record().fieldName(i)] = sqlQuery.value(i);
+            }
+            results.append(row);
         }
-        results.append(row);
     }
 
     return results;

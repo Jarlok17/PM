@@ -15,8 +15,8 @@ class DBManager : public QObject
 
         Q_INVOKABLE QString getUserDatabasePath();
         Q_INVOKABLE bool initializeDatabase();
-        Q_INVOKABLE bool executeQuery(const QString &query);
-        Q_INVOKABLE QVariantList getQueryResults(const QString &query);
+        Q_INVOKABLE bool executePreparedQuery(const QString &query, const QVariantList &params = QVariantList());
+        Q_INVOKABLE QVariantList getPreparedQueryResults(const QString &query, const QVariantList &params = QVariantList());
 
     private:
         QSqlDatabase db;
