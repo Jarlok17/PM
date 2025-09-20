@@ -131,9 +131,23 @@ Page {
                 {
                     showMessage("Error", "Passwords do not match!")
                 } else { 
-                    showMessage("Success", "Registration successful!", function() {
-                        stackView.pop()
-                    })
+                    if(userManager.createUser(emailField.text, usernameField.text, passwordAgainField.text))
+                    {
+                        showMessage("Success", "Registration successful!", function() {
+                            stackView.pop()
+                            
+                            emailField.clear()
+                            usernameField.clear()
+                            passwordField.clear()
+                            passwordAgainField.clear()
+                        })
+                    } 
+                }
+            }
+            Connections {
+                target: userManager
+                function onRegistrationFailed(errorMessage) {
+                    showMessage("Error", errorMessage)
                 }
             }
         }

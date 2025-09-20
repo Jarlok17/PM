@@ -16,7 +16,7 @@ Page {
         
         Label {
             anchors.centerIn: parent
-            text: "Welcome to Main Page!"
+            text: "Welcome to Main Page " + userManager.getCurrentUser().username + "!"
             font.pixelSize: Theme.fontSizeXLarge
             font.bold: true
             color: Theme.textColor

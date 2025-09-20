@@ -84,8 +84,21 @@ Page {
             onClicked: {
                 if (passwordField.text === "" || usernameField.text === "") {
                     showMessage("Error", "Password or Username can't be empty!")
-                } else { 
-                    stackView.push("qrc:/Pages/MainPage.qml")
+                } else {
+                    if(userManager.authenticateUser(usernameField.text, passwordField.text))
+                    {
+                        stackView.push("qrc:/Pages/MainPage.qml")
+                        usernameField.clear()
+                        passwordField.clear()
+                    } else {
+                        showMessage("Error", "Cant login in account!")
+                    }
+                }
+            }
+            Connections {
+                target: userManager
+                function onAuthenticationFailed(errorMessage) {
+                    showMessage("Error", errorMessage)
                 }
             }
         }
@@ -110,7 +123,7 @@ Page {
             }
             padding: Theme.paddingMedium
             onClicked: {
-                stackView.push("qrc:/Pages/RegistrationPage.qml")
+                stackView.push("qrc:/Pages/RegistrationPage.qml") 
             }
         }
     }
