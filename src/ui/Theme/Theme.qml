@@ -88,16 +88,18 @@ QtObject {
             property string messageType: "Info"
             property var onClose: null
 
-            // Затемнення фону
             Rectangle {
                 anchors.fill: parent
                 color: "#80000000"
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {}
+                }
             }
 
             Rectangle {
                 id: dialogContainer
                 width: Math.min(parent.width * 0.8, 400)
-                height: Math.min(parent.height * 0.6, 250)
                 anchors.centerIn: parent
                 color: Theme.cardColor
                 radius: Theme.radiusLarge
@@ -111,7 +113,10 @@ QtObject {
                 }
                 border.width: 2
 
+                height: contentColumn.implicitHeight + Theme.paddingLarge * 2
+
                 Column {
+                    id: contentColumn
                     anchors {
                         fill: parent
                         margins: Theme.paddingLarge
@@ -134,25 +139,21 @@ QtObject {
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
 
-                    ScrollView {
+                    Text {
+                        id: messageText
                         width: parent.width
-                        height: parent.height - (okButton.height + (Theme.paddingLarge + Theme.spacingLarge) * 2)
-
-                        TextArea {
-                            text: dialogRoot.message
-                            color: Theme.textColor
-                            font.pixelSize: Theme.fontSizeMedium
-                            wrapMode: Text.Wrap
-                            readOnly: true
-                            background: null
-                            padding: Theme.paddingSmall
-                        }
+                        text: dialogRoot.message
+                        color: Theme.textColor
+                        font.pixelSize: Theme.fontSizeMedium
+                        wrapMode: Text.Wrap
+                        horizontalAlignment: Text.AlignHCenter
                     }
 
                     Button {
                         id: okButton
                         text: "OK"
                         anchors.horizontalCenter: parent.horizontalCenter
+                        width: parent.width * 0.6
                         hoverEnabled: true
                         background: Rectangle {
                             color: parent.pressed ? Theme.buttonPressedColor :
