@@ -2,7 +2,7 @@
 
 [![Qt](https://img.shields.io/badge/Qt-6.9-green?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qt-6.9/)
 [![QML](https://img.shields.io/badge/QML-6.9-blue?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qt-6/qtqml-index.html)
-[![CMake](https://img.shields.io/badge/CMake-3.27+-064F8C?style=for-the-badge&logo=cmake&logoColor=white)](https://cmake.org/)
+[![CMake](https://img.shields.io/badge/CMake-3.10+-064F8C?style=for-the-badge&logo=cmake&logoColor=white)](https://cmake.org/)
 
 ## 📖 Overview
 **PM** is a cross-platform password manager built with **C++/Qt6 + QML**, designed for secure password storage and management.  
@@ -22,7 +22,7 @@
 
 ### ✅ Prerequisites
 - [Qt6 framework](https://doc.qt.io/qt-6/get-and-install-qt.html)  
-- [CMake 3.27+](https://cmake.org/download/)  
+- [CMake 3.10+](https://cmake.org/download/)  
 - A C++23 compiler (g++, clang, or MSVC)  
 
 ---
