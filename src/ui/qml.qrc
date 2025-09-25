@@ -7,6 +7,7 @@
         <file alias="Theme/qmldir">Theme/qmldir</file>
     </qresource>
     <qresource prefix="">
+    	<file alias="Pages/PasswordsPage.qml">Pages/PasswordsPage.qml</file>
         <file alias="Pages/LoginPage.qml">Pages/LoginPage.qml</file>
         <file alias="Pages/RegistrationPage.qml">Pages/RegistrationPage.qml</file>
         <file alias="Pages/MainPage.qml">Pages/MainPage.qml</file>
