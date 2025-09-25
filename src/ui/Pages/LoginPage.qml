@@ -1,5 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 2.15
+
 import "../Theme"
 
 Page {
@@ -25,41 +27,23 @@ Page {
             bottomPadding: Theme.paddingLarge
         }
 
-        TextField {
+        Loader {
             id: usernameField
-            placeholderText: "Username"
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: usernameField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "UserName"
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
-        TextField {
+        Loader {
             id: passwordField
-            placeholderText: "Password"
-            echoMode: TextInput.Password
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: passwordField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "Password"
+                item.echoMode = TextInput.Password
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
         Button {
@@ -82,14 +66,14 @@ Page {
             }
             padding: Theme.paddingMedium
             onClicked: {
-                if (passwordField.text === "" || usernameField.text === "") {
+                if (passwordField.item.text === "" || usernameField.item.text === "") {
                     showMessage("Error", "Password or Username can't be empty!")
                 } else {
-                    if(userManager.authenticateUser(usernameField.text, passwordField.text))
+                    if(userManager.authenticateUser(usernameField.item.text, passwordField.item.text))
                     {
                         stackView.push("qrc:/Pages/MainPage.qml")
-                        usernameField.clear()
-                        passwordField.clear()
+                        usernameField.item.clear()
+                        passwordField.item.clear()
                     } else {
                         showMessage("Error", "Cant login in account!")
                     }
