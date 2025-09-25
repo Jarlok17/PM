@@ -25,7 +25,7 @@ class UserManager : public QObject
         Q_INVOKABLE bool isUsernameValid(const QString &username);
 
         int currentUserId() const;
-        void setCurrentUserId(int userId);
+        Q_INVOKABLE void setCurrentUserId(int userId);
 
     signals:
         void currentUserIdChanged(int userId);
