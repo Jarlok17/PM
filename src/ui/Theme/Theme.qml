@@ -2,6 +2,7 @@
 pragma Singleton
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 2.15
 
 QtObject {
     // Colors
@@ -39,7 +40,7 @@ QtObject {
     property int fontSizeXXLarge: 32
     
     // Components
-    property Component textFieldStyle: Component {
+    property Component textField: Component {
         TextField {
             background: Rectangle {
                 color: Theme.inputBackground
@@ -56,7 +57,7 @@ QtObject {
         }
     }
     
-    property Component buttonStyle: Component {
+    property Component button: Component {
         Button {
             hoverEnabled: true
             background: Rectangle {
