@@ -37,6 +37,7 @@ mkdir build && cd build
 cmake ..
 make -j$(nproc)
 ./PM
+```
 
 ### Windows (PowerShell)
 ```bash
