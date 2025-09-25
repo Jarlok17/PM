@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+    	<file>icons/app/icon.png</file>
+        <file>icons/app/icon.ico</file>
+        
+	<file alias="icons/menu.png">icons/actions/menu.png</file>
+        <file alias="icons/copy.png">icons/actions/copy.png</file>
+        <file alias="icons/star.png">icons/actions/star.png</file>
+        <file alias="icons/star-filled.png">icons/actions/star-filled.png</file>
+    </qresource>
+</RCC>
