@@ -26,78 +26,42 @@ Page {
             bottomPadding: Theme.paddingLarge
         }
 
-        TextField {
+        Loader {
             id: emailField
-            placeholderText: "Email"
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: emailField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "Email"
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
-        TextField {
+        Loader {
             id: usernameField
-            placeholderText: "Username"
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: usernameField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "UserName"
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
-        TextField {
+        Loader {
             id: passwordField
-            placeholderText: "Password"
-            echoMode: TextInput.Password
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: passwordField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "Password"
+                item.echoMode = TextInput.Password
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
-        TextField {
+        Loader {
             id: passwordAgainField
-            placeholderText: "Repeat Password"
-            echoMode: TextInput.Password
             width: parent.width
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: passwordAgainField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
+            sourceComponent: Theme.textField
+            onLoaded: {
+                item.placeholderText = "Repeat Password"
+                item.echoMode = TextInput.Password
             }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
         }
 
         Button {
@@ -120,26 +84,26 @@ Page {
             }
             padding: Theme.paddingMedium
             onClicked: {
-                if(emailField.text === "" ||
-                usernameField.text === "" ||
-                passwordField.text === "" ||
-                passwordAgainField.text === "")
+                if(emailField.item.text === "" ||
+                usernameField.item.text === "" ||
+                passwordField.item.text === "" ||
+                passwordAgainField.item.text === "")
                 {
                     showMessage("Error", "Email, username or passwords can't be empty!")
                 }
-                else if(passwordField.text !== passwordAgainField.text)
+                else if(passwordField.item.text !== passwordAgainField.item.text)
                 {
                     showMessage("Error", "Passwords do not match!")
                 } else { 
-                    if(userManager.createUser(emailField.text, usernameField.text, passwordAgainField.text))
+                    if(userManager.createUser(emailField.item.text, usernameField.item.text, passwordAgainField.item.text))
                     {
                         showMessage("Success", "Registration successful!", function() {
                             stackView.pop()
                             
-                            emailField.clear()
-                            usernameField.clear()
-                            passwordField.clear()
-                            passwordAgainField.clear()
+                            emailField.item.clear()
+                            usernameField.item.clear()
+                            passwordField.item.clear()
+                            passwordAgainField.item.clear()
                         })
                     } 
                 }
