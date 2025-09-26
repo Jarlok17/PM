@@ -24,7 +24,6 @@ jobs:
           version: 6.9.2
           host: linux
           dir: ${{ runner.temp }}/qt
-          modules: qtdeclarative qtquickcontrols2 qtsvg qttools
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/gcc_64" -DCMAKE_BUILD_TYPE=Release
@@ -56,13 +55,11 @@ jobs:
             base-devel
             cmake
             ninja
-            qt6-base
-            qt6-declarative
-            qt6-quickcontrols2
-            qt6-svg
-            qt6-tools
             mingw-w64-x86_64-qt6-base
             mingw-w64-x86_64-qt6-declarative
+            mingw-w64-x86_64-qt6-quickcontrols2
+            mingw-w64-x86_64-qt6-svg
+            mingw-w64-x86_64-qt6-tools
 
       - name: Configure CMake
         shell: msys2 {0}
