@@ -33,11 +33,3 @@ target_link_libraries(PM
 )
 
 qt_import_qml_plugins(PM)
-
-if(UNIX AND NOT APPLE)
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/pm.desktop
-        ${CMAKE_CURRENT_BINARY_DIR}/pm.desktop
-        COPYONLY
-    )
-endif()
