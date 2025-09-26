@@ -19,11 +19,13 @@ jobs:
             qt_dir: gcc_64
             cmake_generator: Ninja
             binary_path: build/PM
+            qt_modules: qtdeclarative qtquickcontrols2 qtsvg qttools
           - os: windows-latest
             qt_host: windows
             qt_dir: msvc2019_64
             cmake_generator: Ninja
             binary_path: build/PM.exe
+            qt_modules: qtbase
 
     steps:
       - name: Checkout repository
@@ -32,10 +34,10 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.9.*
+          version: 6.8.2
           host: ${{ matrix.qt_host }}
           dir: ${{ runner.temp }}/qt
-          modules: qtdeclarative qtquickcontrols2 qtsvg qttools
+          modules: ${{ matrix.qt_modules }}
 
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v3
@@ -44,7 +46,7 @@ jobs:
         run: |
           cmake -S . -B build \
             -G "${{ matrix.cmake_generator }}" \
-            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.*/${{ matrix.qt_dir }}" \
+            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.8.2/${{ matrix.qt_dir }}" \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
@@ -56,7 +58,7 @@ jobs:
       - name: Deploy Qt (Windows only)
         if: matrix.os == 'windows-latest'
         run: |
-          ${{ runner.temp }}/qt/6.9.*/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
+          ${{ runner.temp }}/qt/6.8.2/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
 
       - name: Package Windows
         if: matrix.os == 'windows-latest'
