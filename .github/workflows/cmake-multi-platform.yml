@@ -93,11 +93,11 @@ jobs:
       - name: Test binary
         shell: msys2 {0}
         run: |
-          ./build/PM.exe || echo "PM launched successfully"
+          ./build/src/PM.exe || echo "PM launched successfully"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: PM-Windows
-          path: build/PM.exe
+          path: build/src/PM.exe
           retention-days: 7
