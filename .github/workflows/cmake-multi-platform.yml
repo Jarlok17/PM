@@ -91,7 +91,7 @@ jobs:
           cmake --build build --parallel
 
       - name: Deploy Qt app
-        run: /mingw64/bin/windeployqt6.exe --release --qmldir . build\src\PM.exe
+        run: /mingw64/bin/windeployqt6.exe --release --qmldir . build/src/PM.exe
         shell: msys2 {0}
 
       - name: Test binary
