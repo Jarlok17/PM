@@ -99,6 +99,7 @@ jobs:
         shell: msys2 {0}
         run: |
           cp build/src/PM.exe dist/bin/
+          mkdir -p dist/qml/PM/THeme
           cp -r src/ui/Theme dist/qml/PM/Theme
           for f in dist/bin/*.exe dist/bin/*.dll; do
             echo "Scanning $f..."
