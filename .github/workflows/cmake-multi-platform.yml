@@ -99,7 +99,14 @@ jobs:
         shell: msys2 {0}
         run: |
           cp build/src/PM.exe dist/bin/
-          ntldd -R dist/bin/PM.exe | awk '{print $3}' | grep -i mingw64/bin | xargs -I {} cp {} dist/bin/ || true
+          for f in dist/bin/*.exe dist/bin/*.dll; do
+            echo "Scanning $f..."
+            ntldd -R "$f" | awk '{print $3}' | grep -i mingw64/bin | sort -u | xargs -I {} cp {} dist/bin/ || true
+          done
+          for f in dist/share/qt6/plugins/**/*.dll; do
+            echo "Scanning plugin $f..."
+            ntldd -R "$f" | awk '{print $3}' | grep -i mingw64/bin | sort -u | xargs -I {} cp {} dist/bin/ || true
+          done
 
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
