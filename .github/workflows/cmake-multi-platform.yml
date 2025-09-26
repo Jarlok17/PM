@@ -99,6 +99,10 @@ jobs:
           echo "==== DIST CONTENTS ===="
           ls -R dist
 
+      - name: Copy exe to dist/bin
+        shell: msys2 {0}
+        run: cp build/src/PM.exe dist/bin/
+
       - name: Test binary
         run: |
           if (Test-Path dist\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
