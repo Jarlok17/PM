@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PM-Linux
-          path: build/PM
+          path: build/src/PM
           retention-days: 7
 
   build-windows:
@@ -72,8 +72,9 @@ jobs:
           update: true
           install: |
             base-devel
-            cmake
-            ninja
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
             mingw-w64-x86_64-qt6-base
             mingw-w64-x86_64-qt6-declarative
             mingw-w64-x86_64-qt6-svg
@@ -82,7 +83,7 @@ jobs:
       - name: Configure CMake
         shell: msys2 {0}
         run: |
-          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
 
       - name: Build
         shell: msys2 {0}
@@ -92,7 +93,7 @@ jobs:
       - name: Test binary
         shell: msys2 {0}
         run: |
-          ./build/PM.exe --version || echo "PM launched successfully"
+          ./build/PM.exe || echo "PM launched successfully"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
