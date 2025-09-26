@@ -12,30 +12,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.14
+        with:
+          cmake-version: '3.28.3'
 
-      - name: Install Qt and dependencies (Linux)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            qt6-base-dev \
-            qt6-declarative-dev \
-            qt6-quickcontrols2-6-dev \
-            qt6-svg-dev \
-            qt6-tools-dev \
-            cmake \
-            ninja-build \
-            build-essential
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.9.2
+          host: linux
+          dir: ${{ runner.temp }}/qt
+          modules: qtdeclarative qtquickcontrols2 qtsvg qttools
 
       - name: Configure CMake
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/gcc_64" -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --config Release --parallel
 
-      - name: Test binary
-        run: |
-          ./build/PM --version || echo "PM launched successfully"
-          file ./build/PM
+      - name: Run PM binary
+        run: ./build/src/PM || echo "PM launched successfully"
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
@@ -50,62 +48,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Qt (Windows - правильний спосіб)
-        run: |
-          # Встановлюємо Qt через chocolatey - РОБОЧИЙ спосіб
-          choco install qtcreator -y --no-progress
-          # Або використовуємо вже встановлений Qt в GitHub runner
-          echo "Qt paths:"
-          dir "C:\Qt" 2>nul || echo "Qt not found in default location"
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: |
+            base-devel
+            cmake
+            ninja
+            qt6-base
+            qt6-declarative
+            qt6-quickcontrols2
+            qt6-svg
+            qt6-tools
+            mingw-w64-x86_64-qt6-base
+            mingw-w64-x86_64-qt6-declarative
 
-      - name: Find Qt installation (Windows)
-        id: find_qt
+      - name: Configure CMake
+        shell: msys2 {0}
         run: |
-          # Шукаємо будь-яку версію Qt6
-          $qtPath = Get-ChildItem "C:\Qt" -Filter "6.*" -Directory | Select-Object -First 1
-          if ($qtPath) {
-              $fullPath = $qtPath.FullName
-              echo "Found Qt at: $fullPath"
-              echo "QT_PATH=$fullPath" | Out-File -FilePath $env:GITHUB_ENV -Append
-              echo "Using Qt version: $($qtPath.Name)"
-          } else {
-              # Якщо Qt не знайдено, спробуємо встановити через alternative method
-              echo "Qt not found, trying alternative installation..."
-          }
+          cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
 
-      - name: Install Qt alternative (якщо не знайдено)
-        if: steps.find_qt.outputs.qt_path == ''
+      - name: Build
+        shell: msys2 {0}
         run: |
-          # Альтернативний спосіб встановлення Qt
-          iwr -Uri https://github.com/msys2/msys2-installer/releases/download/2023-03-18/msys2-x86_64-20230318.exe -OutFile msys2.exe
-          Start-Process -Wait -FilePath .\msys2.exe -ArgumentList 'install','--confirm-command','--accept-messages','--confirm-license'
+          cmake --build build --parallel
 
-      - name: Configure CMake (Windows)
+      - name: Test binary
+        shell: msys2 {0}
         run: |
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" `
-            -A x64 `
-            -DCMAKE_PREFIX_PATH="$env:QT_PATH" `
-            -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build (Windows)
-        run: cmake --build build --config Release --parallel
-
-      - name: Test Windows binary
-        run: |
-          if (Test-Path "build\Release\PM.exe") {
-              echo "✅ Windows build successful!"
-              .\build\Release\PM.exe --version || echo "PM executed"
-          } else {
-              echo "❌ PM.exe not found!"
-              Get-ChildItem build -Recurse -Filter "*.exe" | % { echo "Found: $($_.FullName)" }
-          }
+          ./build/PM.exe --version || echo "PM launched successfully"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: PM-Windows
-          path: |
-            build/Release/PM.exe
-            build/PM.exe
+          path: build/PM.exe
           retention-days: 7
