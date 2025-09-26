@@ -92,7 +92,7 @@ jobs:
 
       - name: Test binary
         run: |
-          build\src\PM.exe || echo "PM launched successfully"
+          if (Test-Path build\src\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
