@@ -106,6 +106,15 @@ jobs:
           cp build/src/PM.exe dist/bin/
           ntldd -R dist/bin/PM.exe | awk '{print $3}' | grep -i mingw64/bin | xargs -I {} cp {} dist/bin/ || true
 
+      - name: Copy runtime DLLs + QML
+        shell: msys2 {0}
+        run: |
+          cp /mingw64/bin/libstdc++-6.dll dist/bin/ || true
+          cp /mingw64/bin/libgcc_s_seh-1.dll dist/bin/ || true
+          cp /mingw64/bin/libwinpthread-1.dll dist/bin/ || true
+          cp /mingw64/bin/libicu*.dll dist/bin/ || true
+          cp -r /mingw64/share/qt6/qml dist/ || true
+
       - name: Test binary
         run: |
           if (Test-Path dist\bin\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
