@@ -91,9 +91,8 @@ jobs:
           cmake --build build --parallel
 
       - name: Test binary
-        shell: msys2 {0}
         run: |
-          ./build/src/PM.exe || echo "PM launched successfully"
+          build\src\PM.exe || echo "PM launched successfully"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
