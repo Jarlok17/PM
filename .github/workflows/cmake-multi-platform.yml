@@ -16,16 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             qt_host: linux
-            qt_dir: gcc_64
+            qt_arch: gcc_64
             cmake_generator: Ninja
             binary_path: build/PM
-            qt_modules: qtdeclarative qtquickcontrols2 qtsvg qttools
+            qt_version: 6.6.2
           - os: windows-latest
             qt_host: windows
-            qt_dir: msvc2019_64
-            cmake_generator: Ninja
-            binary_path: build/PM.exe
-            qt_modules: qtbase
+            qt_arch: win64_msvc2019_64
+            cmake_generator: Visual Studio 17 2022
+            binary_path: build/Release/PM.exe
+            qt_version: 6.6.2
 
     steps:
       - name: Checkout repository
@@ -34,19 +34,21 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.8.2
+          version: ${{ matrix.qt_version }}
           host: ${{ matrix.qt_host }}
+          arch: ${{ matrix.qt_arch }}
           dir: ${{ runner.temp }}/qt
-          modules: ${{ matrix.qt_modules }}
+          modules: qtbase qtdeclarative qtquickcontrols2 qtsvg qttools
 
-      - name: Install Ninja
+      - name: Install Ninja (тільки для Linux)
+        if: matrix.os == 'ubuntu-latest'
         uses: seanmiddleditch/gha-setup-ninja@v3
 
       - name: Configure CMake
         run: |
           cmake -S . -B build \
             -G "${{ matrix.cmake_generator }}" \
-            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.8.2/${{ matrix.qt_dir }}" \
+            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/${{ matrix.qt_version }}/${{ matrix.qt_arch }}" \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
@@ -58,14 +60,14 @@ jobs:
       - name: Deploy Qt (Windows only)
         if: matrix.os == 'windows-latest'
         run: |
-          ${{ runner.temp }}/qt/6.8.2/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
+          "${{ runner.temp }}/qt/${{ matrix.qt_version }}/${{ matrix.qt_arch }}/bin/windeployqt.exe" build/Release/PM.exe --release
 
       - name: Package Windows
         if: matrix.os == 'windows-latest'
         run: |
           mkdir package
-          copy build\\PM.exe package\\
-          xcopy build\\*.dll package\\ /Y
+          copy build\Release\PM.exe package\
+          copy build\Release\*.dll package\ 2>nul || echo "No DLLs found"
           powershell Compress-Archive -Path package -DestinationPath PM-Windows.zip
 
       # --------------------
@@ -74,14 +76,14 @@ jobs:
       - name: Install linuxdeployqt
         if: matrix.os == 'ubuntu-latest'
         run: |
-          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+          wget -q https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
           chmod +x linuxdeployqt-continuous-x86_64.AppImage
           sudo mv linuxdeployqt-continuous-x86_64.AppImage /usr/local/bin/linuxdeployqt
 
       - name: Package Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          linuxdeployqt build/PM -appimage -bundle-non-qt-libs
+          linuxdeployqt build/PM -appimage -bundle-non-qt-libs -verbose=1
           mv PM*.AppImage PM-Linux.AppImage
 
       # --------------------
