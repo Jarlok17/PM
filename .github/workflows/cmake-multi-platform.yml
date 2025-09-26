@@ -1,0 +1,95 @@
+name: Build PM
+
+on:
+  push:
+    branches: [ "main", "features/**" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            qt_host: linux
+            qt_dir: gcc_64
+            cmake_generator: Ninja
+            binary_path: build/PM
+          - os: windows-latest
+            qt_host: windows
+            qt_dir: msvc2019_64
+            cmake_generator: Ninja
+            binary_path: build/PM.exe
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.9.2
+          host: ${{ matrix.qt_host }}
+          dir: ${{ runner.temp }}/qt
+          modules: qtbase qtdeclarative qtquickcontrols2 qtsvg qttools
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -G "${{ matrix.cmake_generator }}" \
+            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/${{ matrix.qt_dir }}" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      # --------------------
+      # Packing for Windows
+      # --------------------
+      - name: Deploy Qt (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: |
+          ${{ runner.temp }}/qt/6.9.2/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
+
+      - name: Package Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir package
+          copy build\\PM.exe package\\
+          xcopy build\\*.dll package\\ /Y
+          powershell Compress-Archive -Path package -DestinationPath PM-Windows.zip
+
+      # --------------------
+      # Packing for Linux
+      # --------------------
+      - name: Install linuxdeployqt
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+          sudo mv linuxdeployqt-continuous-x86_64.AppImage /usr/local/bin/linuxdeployqt
+
+      - name: Package Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          linuxdeployqt build/PM -appimage -bundle-non-qt-libs
+          mv PM*.AppImage PM-Linux.AppImage
+
+      # --------------------
+      # Downloading results
+      # --------------------
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PM-${{ matrix.os }}
+          path: |
+            PM-Windows.zip
+            PM-Linux.AppImage
+          retention-days: 7
