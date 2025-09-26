@@ -2,7 +2,7 @@ name: Build PM
 
 on:
   push:
-    branches: [ "main", "features/**" ]
+    branches: [ "main", dev, "features/**" ]
   pull_request:
     branches: [ "main" ]
 
@@ -32,10 +32,10 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          version: 6.9.2
+          version: 6.9.*
           host: ${{ matrix.qt_host }}
           dir: ${{ runner.temp }}/qt
-          modules: qtbase qtdeclarative qtquickcontrols2 qtsvg qttools
+          modules: qtdeclarative qtquickcontrols2 qtsvg qttools
 
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v3
@@ -44,7 +44,7 @@ jobs:
         run: |
           cmake -S . -B build \
             -G "${{ matrix.cmake_generator }}" \
-            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/${{ matrix.qt_dir }}" \
+            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.*/${{ matrix.qt_dir }}" \
             -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
@@ -56,7 +56,7 @@ jobs:
       - name: Deploy Qt (Windows only)
         if: matrix.os == 'windows-latest'
         run: |
-          ${{ runner.temp }}/qt/6.9.2/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
+          ${{ runner.temp }}/qt/6.9.*/msvc2019_64/bin/windeployqt.exe build/PM.exe --release
 
       - name: Package Windows
         if: matrix.os == 'windows-latest'
@@ -83,13 +83,20 @@ jobs:
           mv PM*.AppImage PM-Linux.AppImage
 
       # --------------------
-      # Downloading results
+      # Upload results
       # --------------------
-      - name: Upload artifacts
+      - name: Upload Windows artifact
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: PM-${{ matrix.os }}
-          path: |
-            PM-Windows.zip
-            PM-Linux.AppImage
+          name: PM-Windows
+          path: PM-Windows.zip
+          retention-days: 7
+
+      - name: Upload Linux artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: PM-Linux
+          path: PM-Linux.AppImage
           retention-days: 7
