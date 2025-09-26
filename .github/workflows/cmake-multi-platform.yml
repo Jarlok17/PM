@@ -44,10 +44,6 @@ jobs:
             libfreetype6 \
             libx11-xcb1
 
-      - name: Install ntldd
-        shell: msys2 {0}
-        run: pacman -S --noconfirm ntldd-git
-
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/gcc_64" -DCMAKE_BUILD_TYPE=Release
 
@@ -102,6 +98,10 @@ jobs:
         run: |
           echo "==== DIST CONTENTS ===="
           ls -R dist
+
+      - name: Install ntldd
+        shell: msys2 {0}
+        run: pacman -S --noconfirm ntldd-git
 
       - name: Copy exe to dist/bin
         shell: msys2 {0}
