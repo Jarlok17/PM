@@ -25,6 +25,25 @@ jobs:
           host: linux
           dir: ${{ runner.temp }}/qt
 
+      - name: Install Qt runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxcb-cursor0 \
+            libxcb-xinerama0 \
+            libxcb-randr0 \
+            libxkbcommon-x11-0 \
+            libglu1-mesa \
+            libxi6 \
+            libxrender1 \
+            libxfixes3 \
+            libxext6 \
+            libsm6 \
+            libice6 \
+            libfontconfig1 \
+            libfreetype6 \
+            libx11-xcb1
+
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/6.9.2/gcc_64" -DCMAKE_BUILD_TYPE=Release
 
@@ -57,7 +76,6 @@ jobs:
             ninja
             mingw-w64-x86_64-qt6-base
             mingw-w64-x86_64-qt6-declarative
-            mingw-w64-x86_64-qt6-quickcontrols2
             mingw-w64-x86_64-qt6-svg
             mingw-w64-x86_64-qt6-tools
 
