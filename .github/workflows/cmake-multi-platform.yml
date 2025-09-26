@@ -90,6 +90,11 @@ jobs:
         run: |
           cmake --build build --parallel
 
+      - name: Deploy Qt dependencies
+        shell: msys2 {0}
+        run: |
+          windeployqt6.exe --release --qmldir . build/src/PM.exe
+
       - name: Test binary
         run: |
           if (Test-Path build\src\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
