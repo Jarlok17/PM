@@ -113,6 +113,12 @@ jobs:
         run: |
           cp -r /mingw64/bin/*.dll dist/bin/ || true 
 
+      - name: Copy QML modules
+        shell: msys2 {0}
+        run: |
+          mkdir -p dist/qml
+          cp -r /mingw64/share/qt6/qml/* dist/qml/ || true
+
       - name: Test binary
         run: |
           if (Test-Path dist\bin\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
