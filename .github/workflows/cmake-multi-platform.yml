@@ -103,6 +103,14 @@ jobs:
         shell: msys2 {0}
         run: cp build/src/PM.exe dist/bin/
 
+      - name: Copy MinGW runtime deps
+        shell: msys2 {0}
+        run: |
+          cp /mingw64/bin/libfreetype-6.dll dist/bin/ || true
+          cp /mingw64/bin/libharfbuzz-0.dll dist/bin/ || true
+          cp /mingw64/bin/libpng16-16.dll dist/bin/ || true
+          cp /mingw64/bin/libmd4c.dll dist/bin/ || true
+
       - name: Test binary
         run: |
           if (Test-Path dist\bin\PM.exe) { echo "PM.exe exists ✅" } else { exit 1 }
