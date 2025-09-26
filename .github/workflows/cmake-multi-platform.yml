@@ -111,25 +111,7 @@ jobs:
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
         run: |
-          cp /mingw64/bin/libstdc++-6.dll dist/bin/ || true
-          cp /mingw64/bin/libgcc_s_seh-1.dll dist/bin/ || true
-          cp /mingw64/bin/libwinpthread-1.dll dist/bin/ || true
-          cp /mingw64/bin/libdouble-conversion.dll dist/bin/ || true
-          cp /mingw64/bin/libicudt*.dll dist/bin/ || true
-          cp /mingw64/bin/libicuin*.dll dist/bin/ || true
-          cp /mingw64/bin/libicuio*.dll dist/bin/ || true
-          cp /mingw64/bin/libicuuc*.dll dist/bin/ || true
-          cp /mingw64/bin/libpcre2-16-0.dll dist/bin/ || true
-          cp /mingw64/bin/libzstd.dll dist/bin/ || true
-          cp /mingw64/bin/libbrotlidec.dll dist/bin/ || true
-          cp /mingw64/bin/libbrotlicommon.dll dist/bin/ || true
-          cp /mingw64/bin/libbrotlienc.dll dist/bin/ || true
-          cp /mingw64/bin/libfreetype-6.dll dist/bin/ || true
-          cp /mingw64/bin/libharfbuzz-0.dll dist/bin/ || true
-          cp /mingw64/bin/libpng16-16.dll dist/bin/ || true
-          cp /mingw64/bin/zlib1.dll dist/bin/ || true
-          cp /mingw64/bin/libb2-1.dll dist/bin/ || true
-          cp /mingw64/bin/libmd4c.dll dist/bin/ || true
+          cp -r /mingw64/bin/*.dll dist/bin/ || true 
 
       - name: Test binary
         run: |
