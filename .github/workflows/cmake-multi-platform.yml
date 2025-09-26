@@ -92,8 +92,7 @@ jobs:
 
       - name: Install (deploy Qt automatically)
         shell: msys2 {0}
-        run: |
-          cmake --install build --prefix dist
+        run: cmake --install build --prefix "$(pwd)/dist"
 
       - name: Test binary
         run: |
