@@ -93,7 +93,7 @@ jobs:
       - name: Deploy Qt dependencies
         shell: msys2 {0}
         run: |
-          D:\a\_temp\msys64\mingw64\bin\windeployqt6.exe --release --qmldir . build/src/PM.exe
+          "C:\msys64\mingw64\bin\windeployqt6.exe" --release --qmldir . build\src\PM.exe
 
       - name: Test binary
         run: |
