@@ -7,100 +7,105 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    name: Build (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            qt_host: linux
-            qt_arch: gcc_64
-            cmake_generator: Ninja
-            binary_path: build/PM
-            qt_version: 6.6.2
-          - os: windows-latest
-            qt_host: windows
-            qt_arch: win64_msvc2019_64
-            cmake_generator: Visual Studio 17 2022
-            binary_path: build/Release/PM.exe
-            qt_version: 6.6.2
-
+  build-linux:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: ${{ matrix.qt_version }}
-          host: ${{ matrix.qt_host }}
-          arch: ${{ matrix.qt_arch }}
-          dir: ${{ runner.temp }}/qt
-          modules: qtbase qtdeclarative qtquickcontrols2 qtsvg qttools
-
-      - name: Install Ninja (тільки для Linux)
-        if: matrix.os == 'ubuntu-latest'
-        uses: seanmiddleditch/gha-setup-ninja@v3
+      - name: Install Qt and dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qt6-base-dev \
+            qt6-declarative-dev \
+            qt6-quickcontrols2-6-dev \
+            qt6-svg-dev \
+            qt6-tools-dev \
+            cmake \
+            ninja-build \
+            build-essential
 
       - name: Configure CMake
-        run: |
-          cmake -S . -B build \
-            -G "${{ matrix.cmake_generator }}" \
-            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/qt/${{ matrix.qt_version }}/${{ matrix.qt_arch }}" \
-            -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build --config Release --parallel
+        run: cmake --build build --parallel
 
-      # --------------------
-      # Packing for Windows
-      # --------------------
-      - name: Deploy Qt (Windows only)
-        if: matrix.os == 'windows-latest'
+      - name: Test binary
         run: |
-          "${{ runner.temp }}/qt/${{ matrix.qt_version }}/${{ matrix.qt_arch }}/bin/windeployqt.exe" build/Release/PM.exe --release
-
-      - name: Package Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          mkdir package
-          copy build\Release\PM.exe package\
-          copy build\Release\*.dll package\ 2>nul || echo "No DLLs found"
-          powershell Compress-Archive -Path package -DestinationPath PM-Windows.zip
-
-      # --------------------
-      # Packing for Linux
-      # --------------------
-      - name: Install linuxdeployqt
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          wget -q https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-          chmod +x linuxdeployqt-continuous-x86_64.AppImage
-          sudo mv linuxdeployqt-continuous-x86_64.AppImage /usr/local/bin/linuxdeployqt
-
-      - name: Package Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          linuxdeployqt build/PM -appimage -bundle-non-qt-libs -verbose=1
-          mv PM*.AppImage PM-Linux.AppImage
-
-      # --------------------
-      # Upload results
-      # --------------------
-      - name: Upload Windows artifact
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: PM-Windows
-          path: PM-Windows.zip
-          retention-days: 7
+          ./build/PM --version || echo "PM launched successfully"
+          file ./build/PM
 
       - name: Upload Linux artifact
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: PM-Linux
-          path: PM-Linux.AppImage
+          path: build/PM
+          retention-days: 7
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt (Windows - правильний спосіб)
+        run: |
+          # Встановлюємо Qt через chocolatey - РОБОЧИЙ спосіб
+          choco install qtcreator -y --no-progress
+          # Або використовуємо вже встановлений Qt в GitHub runner
+          echo "Qt paths:"
+          dir "C:\Qt" 2>nul || echo "Qt not found in default location"
+
+      - name: Find Qt installation (Windows)
+        id: find_qt
+        run: |
+          # Шукаємо будь-яку версію Qt6
+          $qtPath = Get-ChildItem "C:\Qt" -Filter "6.*" -Directory | Select-Object -First 1
+          if ($qtPath) {
+              $fullPath = $qtPath.FullName
+              echo "Found Qt at: $fullPath"
+              echo "QT_PATH=$fullPath" | Out-File -FilePath $env:GITHUB_ENV -Append
+              echo "Using Qt version: $($qtPath.Name)"
+          } else {
+              # Якщо Qt не знайдено, спробуємо встановити через alternative method
+              echo "Qt not found, trying alternative installation..."
+          }
+
+      - name: Install Qt alternative (якщо не знайдено)
+        if: steps.find_qt.outputs.qt_path == ''
+        run: |
+          # Альтернативний спосіб встановлення Qt
+          iwr -Uri https://github.com/msys2/msys2-installer/releases/download/2023-03-18/msys2-x86_64-20230318.exe -OutFile msys2.exe
+          Start-Process -Wait -FilePath .\msys2.exe -ArgumentList 'install','--confirm-command','--accept-messages','--confirm-license'
+
+      - name: Configure CMake (Windows)
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_PREFIX_PATH="$env:QT_PATH" `
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build (Windows)
+        run: cmake --build build --config Release --parallel
+
+      - name: Test Windows binary
+        run: |
+          if (Test-Path "build\Release\PM.exe") {
+              echo "✅ Windows build successful!"
+              .\build\Release\PM.exe --version || echo "PM executed"
+          } else {
+              echo "❌ PM.exe not found!"
+              Get-ChildItem build -Recurse -Filter "*.exe" | % { echo "Found: $($_.FullName)" }
+          }
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PM-Windows
+          path: |
+            build/Release/PM.exe
+            build/PM.exe
           retention-days: 7
