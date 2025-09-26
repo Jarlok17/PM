@@ -90,10 +90,9 @@ jobs:
         run: |
           cmake --build build --parallel
 
-      - name: Deploy Qt dependencies
+      - name: Deploy Qt app
+        run: /mingw64/bin/windeployqt6.exe --release --qmldir . build\src\PM.exe
         shell: msys2 {0}
-        run: |
-          "C:\msys64\mingw64\bin\windeployqt6.exe" --release --qmldir . build\src\PM.exe
 
       - name: Test binary
         run: |
