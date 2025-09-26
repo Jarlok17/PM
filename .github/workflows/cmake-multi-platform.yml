@@ -99,6 +99,7 @@ jobs:
         shell: msys2 {0}
         run: |
           cp build/src/PM.exe dist/bin/
+          cp -r src/ui/Theme dist/qml/PM/Theme
           for f in dist/bin/*.exe dist/bin/*.dll; do
             echo "Scanning $f..."
             ntldd -R "$f" | awk '{print $3}' | grep -i mingw64/bin | sort -u | xargs -I {} cp {} dist/bin/ || true
@@ -107,6 +108,19 @@ jobs:
             echo "Scanning plugin $f..."
             ntldd -R "$f" | awk '{print $3}' | grep -i mingw64/bin | sort -u | xargs -I {} cp {} dist/bin/ || true
           done
+
+      - name: Ensure qt.conf points import path to ../qml
+        shell: msys2 {0}
+        run: |
+          mkdir -p dist/bin
+          rm -f dist/bin/qt.conf
+          cat > dist/bin/qt.conf <<'EOF'
+          [Paths]
+          Prefix = ..
+          Plugins = share/qt6/plugins
+          Qml2Imports = qml
+          EOF
+
 
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
