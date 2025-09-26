@@ -79,6 +79,7 @@ jobs:
             mingw-w64-x86_64-qt6-declarative
             mingw-w64-x86_64-qt6-svg
             mingw-w64-x86_64-qt6-tools
+            mingw-w64-x86_64-ntldd
 
       - name: Configure CMake
         shell: msys2 {0}
@@ -98,10 +99,6 @@ jobs:
         run: |
           echo "==== DIST CONTENTS ===="
           ls -R dist
-
-      - name: Install ntldd
-        shell: msys2 {0}
-        run: pacman -S --noconfirm ntldd-git
 
       - name: Copy exe to dist/bin
         shell: msys2 {0}
