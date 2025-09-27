@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
         app.setWindowIcon(QIcon(iconPath));
     } else {
         qDebug() << "Icon file does NOT exist";
-        // Спробуйте альтернативний шлях
         iconPath = "qrc:/icons/app/icon.png";
         qDebug() << "Trying alternative path:" << iconPath;
         app.setWindowIcon(QIcon(iconPath));
