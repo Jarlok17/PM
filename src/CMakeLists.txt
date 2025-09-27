@@ -29,7 +29,8 @@ target_link_libraries(PM
         Qt6::Core
         Qt6::Gui
         Qt6::Qml
-        Qt6::Quick
+	Qt6::Quick
+	Qt6::QuickControls2
 )
 
 qt_import_qml_plugins(PM)
