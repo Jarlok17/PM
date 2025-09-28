@@ -3,7 +3,6 @@
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QQuickStyle>
 
 #include "clipboard/textclipboard.hpp"
 #include "dbmanager/dbmanager.hpp"
@@ -13,8 +12,6 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-
-    QQuickStyle::setStyle("Basic");
 
     app.setApplicationName("PM");
     app.setApplicationVersion("1.0.0");
