@@ -39,17 +39,6 @@ make -j$(nproc)
 ./PM
 ```
 
-### Windows (PowerShell)
-```bash
-git clone https://github.com/username/PM.git
-cd PM
-mkdir build
-cd build
-cmake .. -G "MinGW Makefiles"
-cmake --build . --config Release
-PM.exe
-```
-
 ### 📁 Project Structure
 ```
 .
