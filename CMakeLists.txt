@@ -7,6 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Sql QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Sql)
 
 add_subdirectory(src)
