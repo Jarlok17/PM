@@ -26,84 +26,61 @@ Page {
             bottomPadding: Theme.paddingLarge
         }
 
-        Loader {
+        CustomTextField {
             id: emailField
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "Email"
-            }
+            height: 60
+            placeholderText: "email"
         }
 
-        Loader {
-            id: usernameField
+        CustomTextField {
+            id: usernameField 
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "UserName"
-            }
+            height: 60
+            placeholderText: "username"
         }
 
-        Loader {
-            id: passwordField
+        CustomTextField {
+            id: passwordField 
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "Password"
-                item.echoMode = TextInput.Password
-            }
+            height: 60
+            placeholderText: "password"
+            echoMode: TextInput.Password
         }
 
-        Loader {
-            id: passwordAgainField
+        CustomTextField {
+            id: passwordAgainField 
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "Repeat Password"
-                item.echoMode = TextInput.Password
-            }
+            height: 60
+            placeholderText: "repeat password"
+            echoMode: TextInput.Password
         }
 
-        Button {
+        CustomButton {
             text: "Register"
             width: parent.width
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.pressed ? Theme.buttonPressedColor :
-                parent.hovered ? Theme.buttonHoverColor :
-                Theme.buttonColor
-                radius: Theme.radiusMedium
-            }
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textColor
-                font.pixelSize: Theme.fontSizeMedium
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            padding: Theme.paddingMedium
+            height: 50
             onClicked: {
-                if(emailField.item.text === "" ||
-                usernameField.item.text === "" ||
-                passwordField.item.text === "" ||
-                passwordAgainField.item.text === "")
+                if(emailField.text === "" ||
+                usernameField.text === "" ||
+                passwordField.text === "" ||
+                passwordAgainField.text === "")
                 {
                     showMessage("Error", "Email, username or passwords can't be empty!")
                 }
-                else if(passwordField.item.text !== passwordAgainField.item.text)
+                else if(passwordField.text !== passwordAgainField.text)
                 {
                     showMessage("Error", "Passwords do not match!")
                 } else { 
-                    if(userManager.createUser(emailField.item.text, usernameField.item.text, passwordAgainField.item.text))
+                    if(userManager.createUser(emailField.text, usernameField.text, passwordAgainField.text))
                     {
                         showMessage("Success", "Registration successful!", function() {
                             stackView.pop()
                             
-                            emailField.item.clear()
-                            usernameField.item.clear()
-                            passwordField.item.clear()
-                            passwordAgainField.item.clear()
+                            emailField.clear()
+                            usernameField.clear()
+                            passwordField.clear()
+                            passwordAgainField.clear()
                         })
                     } 
                 }
@@ -116,25 +93,10 @@ Page {
             }
         }
 
-        Button {
+        CustomButton {
             text: "Back"
             width: parent.width
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.pressed ? Theme.buttonPressedColor :
-                parent.hovered ? Theme.buttonHoverColor :
-                Theme.buttonColor
-                radius: Theme.radiusMedium
-            }
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textColor
-                font.pixelSize: Theme.fontSizeMedium
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            padding: Theme.paddingMedium
+            height: 50
             onClicked: {
                 stackView.pop()
             }
@@ -148,6 +110,6 @@ Page {
     }
 
     function showMessage(messageType, message, closeCallback) {
-        messageDialogLoader.item.show(messageType, message, closeCallback);
+        messageDialogLoader.show(messageType, message, closeCallback);
     }
 }

@@ -272,21 +272,11 @@ Page {
                     spacing: Theme.spacingMedium
 
                     // Search field
-                    TextField {
+                    CustomTextField {
                         id: searchField
                         Layout.fillWidth: true
+                        implicitHeight: 60
                         placeholderText: "Search by title or notes..."
-                        background: Rectangle {
-                            color: Theme.inputBackground
-                            border.color: searchField.activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                            border.width: 4
-                            radius: Theme.radiusMedium
-                        }
-                        color: Theme.textColor
-                        font.pixelSize: Theme.fontSizeMedium
-                        padding: Theme.paddingMedium
-
-                        rightPadding: clearSearchButton.width + Theme.paddingMedium
 
                         onTextChanged: {
                             if (text.length > 0) {
@@ -303,9 +293,11 @@ Page {
                     }
                     
                     // Add password button
-                    Button {
+                    CustomButton {
                         id: addPasswordButton
                         text: "Add Password"
+                        implicitWidth: 120
+                        implicitHeight: 60
                         hoverEnabled: true
                         background: Rectangle {
                             color: addPasswordButton.pressed ? Theme.buttonPressedColor :
@@ -313,13 +305,6 @@ Page {
                             Theme.primaryColor
                             radius: Theme.radiusMedium
                         }
-                        contentItem: Text {
-                            text: addPasswordButton.text
-                            color: Theme.textColor
-                            font.pixelSize: Theme.fontSizeMedium
-                            font.bold: true
-                        }
-                        padding: Theme.paddingMedium
                         onClicked: {
                             addPasswordDialog.open()
                         }
@@ -488,13 +473,24 @@ Page {
                 }
             }
 
+            
             Menu {
                 id: contextMenu
                 modal: true
                 dim: false
+                
 
                 MenuItem {
                     text: "Edit"
+                    background: Rectangle {
+                        color: parent.highlighted ? Theme.menuHighlight : Theme.menuBackground
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: parent.highlighted ? Theme.menuHighlightText : Theme.menuText
+                        font.pixelSize: Theme.fontSizeMedium
+                        verticalAlignment: Text.AlignVCenter
+                    }
                     onTriggered: {
                         editPasswordDialog.passwordId = passwordsPage.selectedPasswordId
                         var passwordData = passwordManager.getPassword(passwordsPage.selectedPasswordId)
@@ -509,6 +505,15 @@ Page {
 
                 MenuItem {
                     text: "Delete"
+                    background: Rectangle {
+                        color: parent.highlighted ? Theme.menuHighlight : Theme.menuBackground
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: parent.highlighted ? Theme.menuHighlightText : Theme.menuText
+                        font.pixelSize: Theme.fontSizeMedium
+                        verticalAlignment: Text.AlignVCenter
+                    }
                     onTriggered: {
                         deleteConfirmDialog.passwordId = passwordsPage.selectedPasswordId
                         deleteConfirmDialog.passwordTitle = passwordsPage.selectedPasswordTitle
@@ -520,6 +525,15 @@ Page {
 
                 MenuItem {
                     text: "Show Details"
+                    background: Rectangle {
+                        color: parent.highlighted ? Theme.menuHighlight : Theme.menuBackground
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: parent.highlighted ? Theme.menuHighlightText : Theme.menuText
+                        font.pixelSize: Theme.fontSizeMedium
+                        verticalAlignment: Text.AlignVCenter
+                    }
                     onTriggered: {
                         passwordDetailsDialog.passwordId = passwordsPage.selectedPasswordId
                         passwordDetailsDialog.open()

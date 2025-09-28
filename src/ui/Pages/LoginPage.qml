@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
 
 import "../Theme"
 
@@ -27,89 +26,49 @@ Page {
             bottomPadding: Theme.paddingLarge
         }
 
-        Loader {
+        CustomTextField {
             id: usernameField
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "UserName"
-            }
+            height: 60
+            placeholderText: "username"
         }
 
-        Loader {
+        CustomTextField {
             id: passwordField
             width: parent.width
-            sourceComponent: Theme.textField
-            onLoaded: {
-                item.placeholderText = "Password"
-                item.echoMode = TextInput.Password
-            }
-        }
+            height: 60 
+            placeholderText: "password"
+            echoMode: TextInput.Password
+        } 
 
-        Button {
+        
+        CustomButton {
             text: "Login"
             width: parent.width
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.pressed ? Theme.buttonPressedColor :
-                parent.hovered ? Theme.buttonHoverColor :
-                Theme.buttonColor
-                radius: Theme.radiusMedium
-            }
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textColor
-                font.pixelSize: Theme.fontSizeMedium
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            padding: Theme.paddingMedium
+            height: 50
             onClicked: {
-                if (passwordField.item.text === "" || usernameField.item.text === "") {
+                if (passwordField.text === "" || usernameField.text === "") {
                     showMessage("Error", "Password or Username can't be empty!")
                 } else {
-                    if(userManager.authenticateUser(usernameField.item.text, passwordField.item.text))
-                    {
+                    if (userManager.authenticateUser(usernameField.text, passwordField.text)) {
                         stackView.push("qrc:/Pages/MainPage.qml")
-                        usernameField.item.clear()
-                        passwordField.item.clear()
+                        usernameField.clear()
+                        passwordField.clear()
                     } else {
                         showMessage("Error", "Cant login in account!")
                     }
                 }
             }
-            Connections {
-                target: userManager
-                function onAuthenticationFailed(errorMessage) {
-                    showMessage("Error", errorMessage)
-                }
-            }
         }
 
-        Button {
+        
+        CustomButton {
             text: "Create Account"
             width: parent.width
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.pressed ? Theme.buttonPressedColor :
-                parent.hovered ? Theme.buttonHoverColor :
-                Theme.buttonColor
-                radius: Theme.radiusMedium
-            }
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textColor
-                font.pixelSize: Theme.fontSizeMedium
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            padding: Theme.paddingMedium
-            onClicked: {
-                stackView.push("qrc:/Pages/RegistrationPage.qml") 
-            }
+            height: 50
+            onClicked: stackView.push("qrc:/Pages/RegistrationPage.qml")
         }
+
     }
 
     Loader {
