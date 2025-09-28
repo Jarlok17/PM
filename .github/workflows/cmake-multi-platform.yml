@@ -122,7 +122,6 @@ jobs:
           Qml2Imports = qml
           EOF
 
-
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
         run: |
