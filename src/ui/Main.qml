@@ -7,8 +7,8 @@ ApplicationWindow {
     visible: true
     width: 1000
     height: 700
-    minimumHeight: 1000
-    maximumWidth: 700
+    minimumHeight: 700
+    minimumWidth: 1000
     title: "PM"
     color: Theme.backgroundColor
 
