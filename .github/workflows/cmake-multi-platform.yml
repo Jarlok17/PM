@@ -122,10 +122,6 @@ jobs:
           Qml2Imports = qml
           EOF
 
-<<<<<<< HEAD
-=======
-
->>>>>>> cc58192 (fix: use updated workflow config from backup/current-config)
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
         run: |
