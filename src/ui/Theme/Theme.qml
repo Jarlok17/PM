@@ -2,7 +2,6 @@
 pragma Singleton
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 2.15
 
 QtObject {
     // Colors
@@ -19,7 +18,15 @@ QtObject {
     property color inputBackground: "#2d2e3d"
     property color inputBorder: "#3f4050"
     property color inputFocusBorder: primaryColor
-    
+
+    // Menu
+    property color menuBackground: "#2a2b3a"
+    property color menuBorder: "#3f4050"
+    property color menuText: "#ffffff"
+    property color menuHighlight: Theme.primaryColor
+    property color menuHighlightText: "#ffffff"
+
+
     // Sizes
     property int paddingSmall: 8
     property int paddingMedium: 16
@@ -39,45 +46,6 @@ QtObject {
     property int fontSizeXLarge: 24
     property int fontSizeXXLarge: 32
     
-    // Components
-    property Component textField: Component {
-        TextField {
-            background: Rectangle {
-                color: Theme.inputBackground
-                border.color: activeFocus ? Theme.inputFocusBorder : Theme.inputBorder
-                border.width: 2
-                radius: Theme.radiusMedium
-            }
-            color: Theme.textColor
-            font.pixelSize: Theme.fontSizeMedium
-            padding: Theme.paddingMedium
-            selectByMouse: true
-            selectedTextColor: Theme.textColor
-            selectionColor: Theme.primaryLightColor
-        }
-    }
-    
-    property Component button: Component {
-        Button {
-            hoverEnabled: true
-            background: Rectangle {
-                color: parent.pressed ? Theme.buttonPressedColor :
-                parent.hovered ? Theme.buttonHoverColor :
-                Theme.buttonColor
-                radius: Theme.radiusMedium
-            }
-            contentItem: Text {
-                text: parent.text
-                color: Theme.textColor
-                font.pixelSize: Theme.fontSizeMedium
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            padding: Theme.paddingMedium
-        }
-    }
-
     property Component messageDialog: Component {
         Item {
             id: dialogRoot

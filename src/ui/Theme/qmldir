@@ -1,2 +1,4 @@
 module PM.Theme
 singleton Theme 1.0 Theme.qml
+CustomButton 1.0 CustomButton.qml
+CustomTextField 1.0 CustomTextField.qml
