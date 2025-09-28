@@ -7,8 +7,22 @@ ApplicationWindow {
     visible: true
     width: 1000
     height: 700
+    minimumHeight: 1000
+    maximumWidth: 700
     title: "PM"
     color: Theme.backgroundColor
+
+    palette {
+        window: Theme.backgroundColor
+        windowText: Theme.textColor
+        base: "#363636"
+        text: Theme.textColor
+        button: Theme.primaryColor
+        buttonText: Theme.textColor
+        highlight: Theme.primaryColor
+        highlightedText: Theme.textColor
+        placeholderText: Theme.textSecondaryColor 
+    }
 
     // Main StackView for navigation
     StackView {
