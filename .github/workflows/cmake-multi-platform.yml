@@ -99,8 +99,8 @@ jobs:
         shell: msys2 {0}
         run: |
           cp build/src/PM.exe dist/bin/
-          mkdir -p dist/qml/PM/THeme
-          cp -r src/ui/Theme dist/qml/PM/Theme
+          mkdir -p dist/qml/PM/
+          cp -r src/ui/Theme dist/qml/PM/
           for f in dist/bin/*.exe dist/bin/*.dll; do
             echo "Scanning $f..."
             ntldd -R "$f" | awk '{print $3}' | grep -i mingw64/bin | sort -u | xargs -I {} cp {} dist/bin/ || true
@@ -122,6 +122,10 @@ jobs:
           Qml2Imports = qml
           EOF
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cc58192 (fix: use updated workflow config from backup/current-config)
       - name: Copy runtime DLLs + QML
         shell: msys2 {0}
         run: |
