@@ -3,8 +3,10 @@
         <file>Main.qml</file>
     </qresource>
     <qresource prefix="">
-        <file alias="Theme/Theme.qml">Theme/Theme.qml</file>
-        <file alias="Theme/qmldir">Theme/qmldir</file>
+        <file>Theme/Theme.qml</file>
+        <file>Theme/qmldir</file>
+	<file>Theme/CustomButton.qml</file>
+        <file>Theme/CustomTextField.qml</file>
     </qresource>
     <qresource prefix="">
     	<file alias="Pages/PasswordsPage.qml">Pages/PasswordsPage.qml</file>
