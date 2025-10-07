@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Password Manager
+GenericName=Password Manager
+Comment=Secure password management application
+Exec=/usr/bin/PM
+Icon=pm
+Terminal=false
+Categories=Utility;Security;
+Keywords=password;security;manager;
+StartupNotify=true
