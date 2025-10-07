@@ -31,7 +31,7 @@
 
 ### Linux / macOS
 ```bash
-git clone https://github.com/username/PM.git
+git clone https://github.com/Jarlok17/PM.git
 cd PM
 mkdir build && cd build
 cmake ..
