@@ -39,4 +39,13 @@ qt_generate_deploy_app_script(
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
+
 install(SCRIPT ${deploy_script})
+
+if(UNIX AND NOT APPLE)
+	install(TARGETS PM RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	install(FILES pm.desktop DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
+	install(FILES ui/assets/icons/app/icon.png
+		DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/64x64/apps
+		RENAME pm.png)
+endif()
